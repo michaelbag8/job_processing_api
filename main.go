@@ -36,3 +36,18 @@ func (h HashProcessor) Process(ctx context.Context, payload string) (string, err
 	hashstring := hex.EncodeToString(data[:])
 	return hashstring, nil
 }
+
+var processorRegistry = map[string]Processor{
+	"reverse": ReverseProcessor{},
+	"wordcount": WordCountProcessor{},
+	"hash": HashProcessor{},
+}
+
+func GetProcessor(jobType string) (Processor, error) {
+	value, ok := processorRegistry[jobType]
+	if !ok {
+		return nil, fmt.Errorf("%s doesn't exist", jobType)
+	}
+	
+	return value, nil
+}
